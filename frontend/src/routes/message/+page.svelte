@@ -19,7 +19,6 @@
     })
 
     let sendMsg = (event) => {
-        event.preventDefault()
         const msg = {
             timestamp: Date.now(),
             body: msgBody
@@ -32,7 +31,7 @@
 
 <h2>Messages</h2>
 
-<form action="" on:submit={sendMsg} class="input-group">
+<form action="" on:submit|preventDefault={sendMsg} class="input-group">
     <input type="text" bind:value={msgBody} class="form-control">
     <button class="btn btn-primary">Send Message</button>
 </form>

@@ -1,18 +1,13 @@
 <script>
-    let errors = ""
     const logoutSubmit = async () => {
-        const response = await fetch("http://localhost:5000/api/user/logout", {
+        await fetch("http://localhost:5000/api/user/logout", {
             method: "POST",
             credentials: "include",
             headers: {
                 "Accept": "application/json"
             }
         })
-        const result = await response.json() 
-
-        if (!response.ok) {
-            errors = result
-        }
+        location.replace("/login")
     }
 </script>
 
@@ -31,14 +26,10 @@
         <li class="nav-item">
           <a class="nav-link" href="/message">Message</a>
         </li>
-        <li class="nav-item">
-            <form action="" on:submit={logoutSubmit}>
-                <button type="submit" class="btn nav-link">Logout</button>
-            </form>
-        </li>
       </ul>
       
       <div class="d-flex">
+        <button class="btn nav-link" on:click={logoutSubmit}>Logout</button>
         <a href="/login" class="nav-link">Login</a>
       </div>
     </div>

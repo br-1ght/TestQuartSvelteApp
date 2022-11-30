@@ -5,13 +5,13 @@ API_BP = Blueprint("api", __name__, url_prefix="/api")
 
 
 @API_BP.get("/")
-def index():
+async def index():
     return {"message": "Welcome to Test Quart App API"}
 
 
 @API_BP.get("/users")
 @login_required
-def users():
+async def users():
     data = [
         {
             "id": 1,

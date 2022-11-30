@@ -18,6 +18,7 @@
         const result = await response.json()
         if (!response.ok) {
             error = result.message
+            return
         }
         location.replace("/")
     }

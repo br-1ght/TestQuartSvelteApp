@@ -1,11 +1,14 @@
 <script>
-	import Nav from "$lib/nav.svelte";
+	import Nav from "$lib/nav.svelte"
+    import { getAuthState } from "$lib/helpers.js"
+    import { authState } from "$lib/stores/auth-store.js"
     let currentYear = new Date().getFullYear()
+    authState.set(getAuthState())
 </script>
 
 <Nav />
 
-<div class="w-50 mx-auto">
+<div class="container">
     <slot />
 </div>
 
