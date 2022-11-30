@@ -1,4 +1,5 @@
 import asyncio
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import (
     create_async_engine,
@@ -34,4 +35,4 @@ async def query():
             print(item.username)
 
 
-asyncio.run(query())
+asyncio.run(main())

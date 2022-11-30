@@ -12,5 +12,3 @@ class Room(Base):
 
     room_id = Column(CHAR(36), primary_key=True)
     disappearing = Column(Boolean)
-
-

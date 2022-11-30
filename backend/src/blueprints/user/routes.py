@@ -1,39 +1,33 @@
-from hmac import compare_digest
+from sqlalchemy import select
+
 from backend.src.blueprints.user.models.LoginData import LoginData
 
 from quart import Blueprint
 from quart_auth import (
     login_user,
     logout_user,
-    AuthUser,
     login_required, current_user
 )
 from quart_schema import validate_request
 
+from backend.src.models import async_session, User
+
 USER_BP = Blueprint('user', __name__, url_prefix="/user")
-DB = [
-    {
-        "id": "1",
-        "username": "bob",
-        "email": "bob@gmail.com",
-        "password": "password123"
-    },
-    {
-        "id": "2",
-        "username": "alice",
-        "email": "alice@gmail.com",
-        "password": "hello456"
-    }
-]
 
 
 @USER_BP.post("/login")
 @validate_request(LoginData)
 async def login(data: LoginData):
-    global DB
-    for entry in DB:
-        if data.username == entry['username'] and compare_digest(data.password, entry['password']):
-            login_user(AuthUser(entry['id']))
+    # for entry in DB:
+    #     if data.username == entry['username'] and compare_digest(data.password, entry['password']):
+    #         login_user(AuthUser(entry['id']))
+    #         return {"message": "login success"}, 200
+    async with async_session() as session:
+        stmt = select(User).where((User.username == data.username) & (User.password == data.password))
+        result = await session.execute(stmt)
+        user = result.scalars().first()
+        if user:
+            login_user(user)
             return {"message": "login success"}, 200
     return {"message": "invalid credentials"}, 401
 

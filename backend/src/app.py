@@ -1,6 +1,8 @@
 import quart_auth
 from quart import Quart, websocket
 from quart_cors import cors
+
+from backend.src.models import User
 from blueprints.api import API_BP
 from blueprints.user import USER_BP
 
@@ -9,7 +11,9 @@ app = Quart(__name__)
 app = cors(app,
            allow_credentials=True,
            allow_origin=["http://localhost"])
-quart_auth.AuthManager(app)
+auth_manager = quart_auth.AuthManager()
+auth_manager.user_class = User
+auth_manager.init_app(app)
 API_BP.register_blueprint(USER_BP)
 app.register_blueprint(API_BP)
 DEBUG = True
