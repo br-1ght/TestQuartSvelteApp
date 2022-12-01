@@ -1,20 +1,18 @@
 from uuid import uuid4
 
-from quart_auth import AuthUser
 from sqlalchemy import (
     Column,
     VARCHAR,
     CHAR,
     Boolean
 )
-from .db import Base
+from backend.src.db_access.globals import Base
 
 
 class User(Base):
     __tablename__ = "User"
 
-    def __init__(self, username, email, password, auth_id):
-        super().__init__(auth_id)
+    def __init__(self, username, email, password):
         self.id = str(uuid4())
         self.username = username
         self.email = email
@@ -29,11 +27,3 @@ class User(Base):
     malware_scan = Column(Boolean, default=True)
     friends_only = Column(Boolean, default=True)
     censor = Column(Boolean, default=True)
-
-
-class AuthedUser(AuthUser):
-    def __init__(self, auth_id):
-        super().__init__(auth_id)
-        self._resolved = False
-
-

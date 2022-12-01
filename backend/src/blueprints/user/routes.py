@@ -10,7 +10,9 @@ from quart_auth import (
 )
 from quart_schema import validate_request
 
-from backend.src.models import async_session, User
+from backend.src.db_access.globals import async_session
+from backend.src.models import User
+from backend.src.models.AuthedUser import AuthedUser
 
 USER_BP = Blueprint('user', __name__, url_prefix="/user")
 
@@ -23,11 +25,11 @@ async def login(data: LoginData):
     #         login_user(AuthUser(entry['id']))
     #         return {"message": "login success"}, 200
     async with async_session() as session:
-        stmt = select(User).where((User.username == data.username) & (User.password == data.password))
+        stmt = select(User).where(User.username == data.username and User.password == data.password)
         result = await session.execute(stmt)
         user = result.scalars().first()
         if user:
-            login_user(user)
+            login_user(AuthedUser(user.id))
             return {"message": "login success"}, 200
     return {"message": "invalid credentials"}, 401
 

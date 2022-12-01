@@ -4,7 +4,7 @@ from sqlalchemy import (
     Boolean
 )
 
-from .db import Base
+from backend.src.db_access.globals import Base
 
 
 class Room(Base):

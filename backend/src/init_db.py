@@ -1,18 +1,10 @@
 import asyncio
 
 from sqlalchemy import select
-from sqlalchemy.ext.asyncio import (
-    create_async_engine,
-    AsyncSession,
-)
-from sqlalchemy.orm import sessionmaker
-from backend.src.models import Base, User, Room
+from backend.src.models import User, Room
+from backend.src.db_access.globals import *
 
 
-DEBUG = False
-connection_string = "mysql+asyncmy://bubbles:bubbles@localhost:3306/bubbles"
-engine = create_async_engine(connection_string, echo=DEBUG)
-async_session = sessionmaker(engine, class_=AsyncSession)
 asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())  # Windows specific issue https://stackoverflow.com/questions/61543406/asyncio-run-runtimeerror-event-loop-is-closed
 
 
