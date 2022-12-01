@@ -18,6 +18,7 @@ class AuthedUser(AuthUser):
     async def _resolve(self):
         if not self._resolved:
             (
+                self._username,
                 self._email,
                 self._profile_pic,
                 self._dark_mode,
@@ -26,6 +27,11 @@ class AuthedUser(AuthUser):
                 self._censor
             ) = await get_user_details(self.auth_id)
             self._resolved = True
+
+    @property
+    async def username(self):
+        await self._resolve()
+        return self._username
 
     @property
     async def email(self):
@@ -46,6 +52,11 @@ class AuthedUser(AuthUser):
     async def malware_scan(self):
         await self._resolve()
         return self._malware_scan
+
+    @property
+    async def friends_only(self):
+        await self._resolve()
+        return self._friends_only
 
     @property
     async def censor(self):

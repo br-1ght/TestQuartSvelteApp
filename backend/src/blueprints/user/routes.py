@@ -20,10 +20,6 @@ USER_BP = Blueprint('user', __name__, url_prefix="/user")
 @USER_BP.post("/login")
 @validate_request(LoginData)
 async def login(data: LoginData):
-    # for entry in DB:
-    #     if data.username == entry['username'] and compare_digest(data.password, entry['password']):
-    #         login_user(AuthUser(entry['id']))
-    #         return {"message": "login success"}, 200
     async with async_session() as session:
         stmt = select(User).where(User.username == data.username and User.password == data.password)
         result = await session.execute(stmt)
@@ -50,3 +46,17 @@ async def is_logged_in():
                     "is_authenticated": True
                 }}
     return {"message": "not authenticated"}
+
+
+@USER_BP.get("/info")
+@login_required
+async def user_info():
+    return {
+        "username": await current_user.username,
+        "email": await current_user.email,
+        "profile_pic": await current_user.profile_pic,
+        "dark_mode": await current_user.dark_mode,
+        "malware_scan": await current_user.malware_scan,
+        "friends_only": await current_user.friends_only,
+        "censor": await current_user.censor
+    }
