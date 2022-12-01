@@ -1,18 +1,21 @@
 from sqlalchemy import select
 
-from backend.src.blueprints.user.models.LoginData import LoginData
 
 from quart import Blueprint
 from quart_auth import (
     login_user,
     logout_user,
-    login_required, current_user
+    login_required,
+    current_user
 )
 from quart_schema import validate_request
 
 from backend.src.db_access.globals import async_session
-from backend.src.models import User
-from backend.src.models.AuthedUser import AuthedUser
+from backend.src.models import (
+    User,
+    AuthedUser,
+    LoginData
+)
 
 USER_BP = Blueprint('user', __name__, url_prefix="/user")
 
@@ -40,11 +43,13 @@ async def logout():
 @USER_BP.get("/is-logged-in")
 async def is_logged_in():
     if await current_user.is_authenticated:
-        return {"message": "user authenticated",
-                "user": {
-                    "user_id": current_user.auth_id,
-                    "is_authenticated": True
-                }}
+        return {
+            "message": "user authenticated",
+            "user": {
+                "user_id": current_user.auth_id,
+                "is_authenticated": True
+            }
+        }
     return {"message": "not authenticated"}
 
 
