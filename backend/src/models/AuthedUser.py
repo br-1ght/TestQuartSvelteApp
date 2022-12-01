@@ -17,7 +17,14 @@ class AuthedUser(AuthUser):
 
     async def _resolve(self):
         if not self._resolved:
-            self._email, self._profile_pic, self._dark_mode, self._malware_scan, self._friends_only, self._censor = await get_user_details(self.auth_id)
+            (
+                self._email,
+                self._profile_pic,
+                self._dark_mode,
+                self._malware_scan,
+                self._friends_only,
+                self._censor
+            ) = await get_user_details(self.auth_id)
             self._resolved = True
 
     @property
