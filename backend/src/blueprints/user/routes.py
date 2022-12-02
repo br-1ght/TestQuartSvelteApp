@@ -1,4 +1,7 @@
-from sqlalchemy import select, or_, text
+from sqlalchemy import (
+    select,
+    or_
+)
 
 from quart import Blueprint
 from quart_auth import (
