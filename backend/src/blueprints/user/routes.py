@@ -1,5 +1,4 @@
-from sqlalchemy import select
-
+from sqlalchemy import select, or_, text
 
 from quart import Blueprint
 from quart_auth import (
@@ -24,7 +23,7 @@ USER_BP = Blueprint('user', __name__, url_prefix="/user")
 @validate_request(LoginData)
 async def login(data: LoginData):
     async with async_session() as session:
-        stmt = select(User).where(User.username == data.username and User.password == data.password)
+        stmt = select(User).where(or_(User.username == data.username, User.email == data.username) & (User.password == data.password))
         result = await session.execute(stmt)
         user = result.scalars().first()
         if user:
