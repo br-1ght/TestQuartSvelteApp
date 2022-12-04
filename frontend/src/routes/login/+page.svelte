@@ -6,7 +6,7 @@
     let error = ""
 
     const loginSubmit = async () => {
-        const response = await fetch("http://localhost:5000/api/user/login", {
+        const response = await fetch("http://localhost:5000/api/auth/login", {
             method: "POST",
             headers: {
                 "Accept": "application/json",

@@ -1,14 +1,16 @@
 <script>
-    const logoutSubmit = async () => {
-        await fetch("http://localhost:5000/api/user/logout", {
-            method: "POST",
-            credentials: "include",
-            headers: {
-                "Accept": "application/json"
-            }
-        })
-        location.replace("/login")
-    }
+  import { page } from '$app/stores'
+
+  const logoutSubmit = async () => {
+    await fetch("http://localhost:5000/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+            "Accept": "application/json"
+        }
+    })
+    location.replace("/login")
+  }
 </script>
 
 <nav class="navbar navbar-expand-lg bg-light">
@@ -29,8 +31,11 @@
       </ul>
       
       <div class="d-flex">
+        {#if $page.data.user}
         <button class="btn nav-link" on:click={logoutSubmit}>Logout</button>
+        {:else}
         <a href="/login" class="nav-link">Login</a>
+        {/if}
       </div>
     </div>
   </div>

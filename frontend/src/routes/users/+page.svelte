@@ -1,7 +1,10 @@
 <script>
+    import {onMount} from "svelte"
+
     export let data
     let users = data.users
     let errors = data.errors
+
 </script>
 
 {#if errors}

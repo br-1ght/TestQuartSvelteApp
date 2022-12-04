@@ -1,8 +1,3 @@
-from sqlalchemy import (
-    select,
-    or_
-)
-
 from quart import Blueprint
 from quart_auth import (
     login_user,
@@ -12,6 +7,8 @@ from quart_auth import (
 )
 from quart_schema import validate_request
 
+import sqlalchemy as sa
+
 from backend.src.db_access.globals import async_session
 from backend.src.models import (
     User,
@@ -19,43 +16,46 @@ from backend.src.models import (
     LoginData
 )
 
-USER_BP = Blueprint('user', __name__, url_prefix="/user")
+auth_bp = Blueprint('auth', __name__, url_prefix="/auth")
 
 
-@USER_BP.post("/login")
+@auth_bp.post("/login")
 @validate_request(LoginData)
 async def login(data: LoginData):
     async with async_session() as session:
-        stmt = select(User).where(or_(User.username == data.username, User.email == data.username) & (User.password == data.password))
-        result = await session.execute(stmt)
+        statement = sa.select(User).where((User.email == data.username) & (User.password == data.password))
+        result = await session.execute(statement)
         user = result.scalars().first()
         if user:
-            login_user(AuthedUser(user.id))
+            login_user(AuthedUser(user.user_id))
             return {"message": "login success"}, 200
     return {"message": "invalid credentials"}, 401
 
 
-@USER_BP.post("/logout")
+@auth_bp.post("/logout")
 @login_required
 async def logout():
     logout_user()
     return {"message": "successful logout"}, 200
 
 
-@USER_BP.get("/is-logged-in")
+@auth_bp.get("/is-logged-in")
 async def is_logged_in():
-    if await current_user.is_authenticated:
-        return {
-            "message": "user authenticated",
-            "user": {
-                "user_id": current_user.auth_id,
-                "is_authenticated": True
-            }
-        }
-    return {"message": "not authenticated"}
+    if not await current_user.is_authenticated:
+        return {"message": "not authenticated"}, 401
+
+    return {
+            "username": await current_user.username,
+            "email": await current_user.email,
+            "profile_pic": await current_user.profile_pic,
+            "dark_mode": await current_user.dark_mode,
+            "malware_scan": await current_user.malware_scan,
+            "friends_only": await current_user.friends_only,
+            "censor": await current_user.censor
+    }
 
 
-@USER_BP.get("/info")
+@auth_bp.get("/info")
 @login_required
 async def user_info():
     return {
